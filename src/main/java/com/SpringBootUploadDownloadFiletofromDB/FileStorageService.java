@@ -1,6 +1,7 @@
 package com.SpringBootUploadDownloadFiletofromDB;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class FileStorageService {
   
   public Stream<FileDB> getAllFiles() {
     return fileDBRepository.findAll().stream();
+  }
+  
+  public void saveAllFilesList(List<FileDB> fileList) {
+      // Save all the files into database
+      for (FileDB fileModal : fileList)
+    	  fileDBRepository.save(fileModal);
   }
 	
 

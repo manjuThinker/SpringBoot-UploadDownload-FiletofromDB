@@ -1,5 +1,6 @@
 package com.SpringBootUploadDownloadFiletofromDB.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,37 @@ public class FileController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 		} catch (Exception e) {
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+		}
+	}
+
+	@PostMapping("/upload/multiple")
+	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("files") MultipartFile[] files) {
+		String message = "";
+		
+		String messa="";
+		try {
+			
+			List<FileDB> fileList = new ArrayList<FileDB>();
+			
+			for(MultipartFile file:files ) {
+				
+				
+				FileDB fileDB=new FileDB(file.getOriginalFilename(), file.getContentType(),  file.getBytes());
+				
+				fileList.add(fileDB);
+							
+				storageService.saveAllFilesList(fileList);
+				messa+=file.getOriginalFilename()+" ,";
+				
+				
+			}
+		
+
+			message = "Uploaded the file successfully: " + messa;
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+		} catch (Exception e) {
+			message = "Could not upload the file: " + messa;
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
 		}
 	}
